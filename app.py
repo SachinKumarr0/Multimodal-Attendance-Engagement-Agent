@@ -27,12 +27,17 @@ st.markdown("""
 # Safe Haar Cascade Loader
 @st.cache_resource
 def load_detector():
-    xml_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
-    detector = cv2.CascadeClassifier(xml_path)
-    return detector
+    try:
+        if hasattr(cv2, 'CascadeClassifier') and hasattr(cv2, 'data'):
+            xml_path = cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
+            det = cv2.CascadeClassifier(xml_path)
+            if not det.empty():
+                return det
+    except Exception:
+        pass
+    return None
 
 detector = load_detector()
-
 # Session Start Time Tracker (for running timer)
 if "session_start_time" not in st.session_state:
     st.session_state.session_start_time = time.time()
